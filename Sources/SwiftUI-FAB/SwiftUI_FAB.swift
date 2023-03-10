@@ -5,7 +5,7 @@ struct FloatingActionButtonModifier<ImageView: View>: ViewModifier {
     let image: ImageView // image shown in the FAB
     let action: () -> Void
     var size: CGFloat = 60 // size of the FAB circle
-    var margin: CGFloat = 15 // distance from screen edges
+    var insets: EdgeInsets
     @State private var isLoaded = false
     func body(content: Content) -> some View {
         ZStack {
@@ -17,7 +17,7 @@ struct FloatingActionButtonModifier<ImageView: View>: ViewModifier {
                     Spacer()
                     button()
                       .scaleEffect(isLoaded ? 1.0 : 0.2)
-                      .offset(x: 0 - margin, y: isLoaded ? 0 - margin : 36)
+                      .offset(x: 0 - insets.trailing, y: isLoaded ? 0 - insets.bottom : 36)
                       .animation(.easeOut(duration: 0.5), value: isLoaded)
                 }
             }
@@ -41,9 +41,8 @@ extension View {
     public func floatingActionButton<ImageView: View>(
       color: Color,
       image: ImageView,
+      insets: EdgeInsets = EdgeInsets(top: 0, leading: 0, bottom: 15, trailing: 15),
       action: @escaping () -> Void) -> some View {
-      self.modifier(FloatingActionButtonModifier(color: color,
-                                         image: image,
-                                         action: action))
+      self.modifier(FloatingActionButtonModifier(color: color, image: image, action: action, insets: insets))
     }
 }
