@@ -6,6 +6,7 @@ struct FloatingActionButtonModifier<ImageView: View>: ViewModifier {
     let action: () -> Void
     var size: CGFloat = 60 // size of the FAB circle
     var insets: EdgeInsets
+    @Binding var hidden: Bool
     @State private var isLoaded = false
     func body(content: Content) -> some View {
         ZStack {
@@ -16,7 +17,7 @@ struct FloatingActionButtonModifier<ImageView: View>: ViewModifier {
                 HStack {
                     Spacer()
                     button()
-                      .scaleEffect(isLoaded ? 1.0 : 0.2)
+                      .scaleEffect(isLoaded ? 1.0 : 0.0)
                       .offset(x: 0 - insets.trailing, y: isLoaded ? 0 - insets.bottom : 36)
                       .animation(.easeOut(duration: 0.5), value: isLoaded)
                 }
@@ -24,6 +25,9 @@ struct FloatingActionButtonModifier<ImageView: View>: ViewModifier {
         }
         .onAppear {
             isLoaded = true
+        }
+        .onChange(of: self.hidden) { hidden in
+            isLoaded = !hidden
         }
     }
     
@@ -42,7 +46,8 @@ extension View {
       color: Color,
       image: ImageView,
       insets: EdgeInsets = EdgeInsets(top: 0, leading: 0, bottom: 15, trailing: 15),
+      hidden: Binding<Bool>,
       action: @escaping () -> Void) -> some View {
-      self.modifier(FloatingActionButtonModifier(color: color, image: image, action: action, insets: insets))
+          self.modifier(FloatingActionButtonModifier(color: color, image: image, action: action, insets: insets, hidden: hidden))
     }
 }
