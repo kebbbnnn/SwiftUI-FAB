@@ -23,6 +23,7 @@ struct FloatingActionButtonModifier<ImageView: View>: ViewModifier {
                 }
             }
         }
+        .ignoresSafeArea(.keyboard)
         .onAppear {
             isLoaded = true
         }
